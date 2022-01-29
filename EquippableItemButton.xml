@@ -1,0 +1,47 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="EquippableItemButton.lua"/>
+	<CheckButton name="EquippableItemButtonTemplate" virtual="true" inherits="SecureActionButtonTemplate, ActionButtonTemplate" frameStrata="MEDIUM">
+        <Attributes>
+            <Attribute name="shift-type2" value="_onclick"/>
+            <Attribute name="alt-type2" value="_onclick"/>
+        </Attributes>
+        <Size x="36" y="36"/>
+        <Layers>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <Texture name="$parentFavorite" file="922035" parentKey="favorite" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-8" y="8"/>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentEnchant" parentKey="enchant" hidden="true">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeTo="$parentIcon">
+                            <Offset>
+        						<AbsDimension x="1" y="1"/>
+        					</Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+		<Scripts>
+            <OnLoad function="EquippableItemButton_OnLoad"/>
+			<PreClick>
+                self:SetChecked(false);
+			</PreClick>
+            <OnShow function="EquippableItemButton_OnShow"/>
+            <OnHide function="EquippableItemButton_OnHide"/>
+			<OnEnter function="EquippableItemButton_OnEnter"/>
+			<OnLeave function="EquippableItemButton_OnLeave"/>
+			<OnUpdate function="EquippableItemButton_OnUpdate"/>
+		</Scripts>
+	</CheckButton>
+    <Frame name="EquippableItemButtonContextMenu" inherits="UIDropDownMenuTemplate" parent="UIParent" toplevel="true" hidden="true">
+        <Scripts>
+			<OnLoad function="EquippableItemButtonContextMenu_OnLoad"/>
+			<OnLeave function="EquippableItemButtonContextMenu_OnLeave"/>
+		</Scripts>
+	</Frame>
+</Ui>

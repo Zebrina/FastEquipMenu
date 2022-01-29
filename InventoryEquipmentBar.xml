@@ -1,0 +1,229 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="InventoryEquipmentBar.lua"/>
+	<CheckButton name="InventoryEquipmentButton" parentArray="Buttons" virtual="true" inherits="EquippableItemButtonTemplate" mixin="InventoryEquipmentButtonMixin" frameStrata="MEDIUM">
+        <Attributes>
+            <Attribute name="checkselfcast" value="true" type="boolean"/>
+            <Attribute name="type1" value="item"/>
+        </Attributes>
+        <Size x="30" y="30"/>
+		<Layers>
+            <Layer level="BACKGROUND" textureSubLevel="1" hidden="true">
+				<Texture name="$parentSwapIcon" parentKey="swapIcon">
+                    <Size x="16" y="16"/>
+					<Anchors>
+                        <Anchor point="BOTTOMRIGHT">
+                            <Offset x="0" y="0"/>
+                        </Anchor>
+					</Anchors>
+                </Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="SpellHighlightAnim" looping="REPEAT">
+				<Alpha childKey="SpellHighlightTexture" smoothing="OUT" duration="0.35" order="1" fromAlpha="0" toAlpha="1"/>
+				<Alpha childKey="SpellHighlightTexture" smoothing="IN" duration="0.35" order="2" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad function="InventoryEquipmentButton_OnLoad"/>
+			<OnEvent function="InventoryEquipmentButton_OnEvent"/>
+			<OnUpdate function="InventoryEquipmentButton_OnUpdate"/>
+			<OnDragStart function="InventoryEquipmentButton_OnDragStart"/>
+			<OnReceiveDrag function="InventoryEquipmentButton_OnReceiveDrag"/>
+		</Scripts>
+		<NormalTexture name="$parentNormalTexture2" file="Interface\Buttons\UI-Quickslot2">
+			<Size x="54" y="54"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-1"/>
+			</Anchors>
+		</NormalTexture>
+	</CheckButton>
+	<Frame name="InventoryEquipmentBar" inherits="SecureFrameTemplate" parent="UIParent" frameStrata="MEDIUM" frameLevel="3" hidden="false">
+		<Frames>
+			<CheckButton name="InventoryEquipmentButtonHead" inherits="InventoryEquipmentButton">
+                <Attributes>
+                    <Attribute name="item" value="1" type="number"/>
+                </Attributes>
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "HEADSLOT";
+                        self.proxyButton = CharacterHeadSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonNeck" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "NECKSLOT";
+                        self.proxyButton = CharacterNeckSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonShoulder" inherits="InventoryEquipmentButton">
+                <Attributes>
+                    <Attribute name="item" value="3" type="number"/>
+                </Attributes>
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "SHOULDERSLOT";
+                        self.proxyButton = CharacterShoulderSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonBack" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "BACKSLOT";
+                        self.proxyButton = CharacterBackSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonChest" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "CHESTSLOT";
+                        self.proxyButton = CharacterChestSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonWrist" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "WRISTSLOT";
+                        self.proxyButton = CharacterWristSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonHands" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "HANDSSLOT";
+                        self.proxyButton = CharacterHandsSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonWaist" inherits="InventoryEquipmentButton">
+                <Attributes>
+                    <Attribute name="item" value="6" type="number"/>
+                </Attributes>
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "WAISTSLOT";
+                        self.proxyButton = CharacterWaistSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonLegs" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "LEGSSLOT";
+                        self.proxyButton = CharacterLegsSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonFeet" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "FEETSLOT";
+                        self.proxyButton = CharacterFeetSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonRing1" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "FINGER0SLOT";
+                        self.invSlotIndex = 1;
+                        self.proxyButton = CharacterFinger0Slot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonRing2" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "FINGER1SLOT";
+                        self.invSlotIndex = 2;
+                        self.proxyButton = CharacterFinger1Slot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonTrinket1" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "TRINKET0SLOT";
+                        self.invSlotIndex = 1;
+                        self.proxyButton = CharacterTrinket0Slot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonTrinket2" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "TRINKET1SLOT";
+                        self.invSlotIndex = 2;
+                        self.proxyButton = CharacterTrinket1Slot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonMainHand" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "MAINHANDSLOT";
+                        self.proxyButton = CharacterMainHandSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonOffHand" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "SECONDARYHANDSLOT";
+                        self.proxyButton = CharacterSecondaryHandSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+			<CheckButton name="InventoryEquipmentButtonRanged" inherits="InventoryEquipmentButton">
+                <Scripts>
+        			<OnLoad>
+                        self.invSlotName = "RANGEDSLOT";
+                        self.checkRelic = true;
+                        self.proxyButton = CharacterRangedSlot;
+        				InventoryEquipmentButton_OnLoad(self);
+        			</OnLoad>
+                </Scripts>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnLoad function="InventoryEquipmentBar_OnLoad"/>
+            <OnEvent function="InventoryEquipmentBar_OnEvent"/>
+			<OnUpdate function="InventoryEquipmentBar_OnUpdate"/>
+			<OnShow function="InventoryEquipmentBar_OnShow"/>
+			<OnHide function="InventoryEquipmentBar_OnHide"/>
+		</Scripts>
+    </Frame>
+    <Frame name="InventoryEquipmentQueueBar" inherits="SecureFrameTemplate" parent="InventoryEquipmentBar" frameStrata="MEDIUM" frameLevel="2" hidden="true">
+		<Scripts>
+			<OnLoad function="InventoryEquipmentQueueBar_OnLoad"/>
+            <OnEvent function="InventoryEquipmentQueueBar_OnEvent"/>
+			<OnUpdate function="InventoryEquipmentQueueBar_OnUpdate"/>
+			<OnShow function="InventoryEquipmentQueueBar_OnShow"/>
+			<OnHide function="InventoryEquipmentQueueBar_OnHide"/>
+		</Scripts>
+    </Frame>
+</Ui>

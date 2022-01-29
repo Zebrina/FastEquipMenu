@@ -1,0 +1,20 @@
+<Bindings>
+    <Binding name="CLICK CharacterHeadSlot:RightButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonHead:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonNeck:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonShoulder:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonBack:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonChest:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonWrist:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonHands:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonWaist:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonLegs:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonFeet:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonRing1:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonRing2:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonTrinket1:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonTrinket2:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonMainHand:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonOffHand:LeftButton" category="Equipment"/>
+    <Binding name="CLICK InventoryEquipmentButtonRanged:LeftButton" category="Equipment"/>
+</Bindings>

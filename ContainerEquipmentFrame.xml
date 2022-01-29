@@ -1,0 +1,129 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="ContainerEquipmentFrame.lua"/>
+    <CheckButton name="ContainerEquipmentButtonTemplate" virtual="true" inherits="EquippableItemButtonTemplate" mixin="ContainerEquipmentButtonMixin">
+        <Attributes>
+            <Attribute name="type1" value="macro"/>
+            <Attribute name="type2" value="macro"/>
+        </Attributes>
+        <Scripts>
+			<OnLoad function="ContainerEquipmentButton_OnLoad"/>
+		</Scripts>
+	</CheckButton>
+	<Frame name="ContainerEquipmentBarTemplate" virtual="true" inherits="SecureFrameTemplate" parent="ContainerEquipmentFrame" parentArray="Bars" frameStrata="MEDIUM" frameLevel="3" hidden="true">
+        <Layers>
+            <Layer level="BORDER">
+                <FontString parentKey="Label" inherits="GameFontNormalLarge">
+                    <Size x="100" y="12"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-6"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <!--
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="2" right="2" top="2" bottom="2"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="8"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="8"/>
+			</EdgeSize>
+		</Backdrop>
+        -->
+		<Scripts>
+			<OnLoad function="ContainerEquipmentBar_OnLoad"/>
+			<OnEvent function="ContainerEquipmentBar_OnEvent"/>
+            <OnUpdate function="ContainerEquipmentBar_OnUpdate"/>
+		</Scripts>
+	</Frame>
+	<Frame name="ContainerEquipmentFrame" parent="UIParent" frameStrata="MEDIUM" frameLevel="3" hidden="false">
+		<Scripts>
+			<OnLoad function="ContainerEquipmentFrame_OnLoad"/>
+			<OnEvent function="ContainerEquipmentFrame_OnEvent"/>
+            <OnUpdate function="ContainerEquipmentFrame_OnUpdate"/>
+		</Scripts>
+	</Frame>
+    <Frame name="ContainerEquipmentBarSets" parent="ContainerEquipmentFrame" frameStrata="MEDIUM" frameLevel="3" hidden="true">
+        <Frames>
+            <Frame parentKey="DropDown" inherits="UIDropDownMenuTemplate" frameStrata="MEDIUM" frameLevel="3" hidden="true">
+                <Anchors>
+                    <Anchor point="LEFT" x="0" y="0"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Layers>
+            <Layer level="BORDER">
+                <FontString parentKey="Label" inherits="GameFontNormalLarge">
+                    <Size x="100" y="12"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="ContainerEquipmentBarSets" relativePoint="LEFT" x="0" y="-6"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <!--
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="2" right="2" top="2" bottom="2"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="8"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="8"/>
+			</EdgeSize>
+		</Backdrop>
+        -->
+        <Scripts>
+			<OnLoad function="ContainerEquipmentBarSets_OnLoad"/>
+			<OnEvent function="ContainerEquipmentBarSets_OnEvent"/>
+            <OnUpdate function="ContainerEquipmentBarSets_OnUpdate"/>
+		</Scripts>
+    </Frame>
+    <Frame name="ContainerEquipmentBarArmor" inherits="ContainerEquipmentBarTemplate">
+		<Scripts>
+			<OnLoad>
+                ContainerEquipmentBar_SetInfo(self, "Armor", {
+                    [1] = true,
+                    [2] = true,
+                    [3] = true,
+                    [15] = true,
+                    [5] = true,
+                    [9] = true,
+                    [10] = true,
+                    [6] = true,
+                    [7] = true,
+                    [8] = true,
+                    [11] = true,
+                });
+                ContainerEquipmentBar_OnLoad(self);
+            </OnLoad>
+		</Scripts>
+	</Frame>
+    <Frame name="ContainerEquipmentBarTrinkets" inherits="ContainerEquipmentBarTemplate">
+		<Scripts>
+			<OnLoad>
+                ContainerEquipmentBar_SetInfo(self, "Trinkets", {
+                    [13] = true,
+                });
+                ContainerEquipmentBar_OnLoad(self);
+            </OnLoad>
+		</Scripts>
+	</Frame>
+    <Frame name="ContainerEquipmentBarWeapons" inherits="ContainerEquipmentBarTemplate">
+		<Scripts>
+			<OnLoad>
+                ContainerEquipmentBar_SetInfo(self, "Weapons", {
+                    [16] = true,
+                    [17] = true,
+                    [18] = true,
+                });
+                ContainerEquipmentBar_OnLoad(self);
+            </OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>
