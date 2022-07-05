@@ -33,39 +33,47 @@ end
 function EquippableItemButton_OnClick(self, unit, button, actionType)
     if (IsShiftKeyDown() and self.invSlot) then
         UnequipInventoryItem(self.invSlot);
+        GameTooltip:Hide();
     elseif (IsAltKeyDown()) then
-        EquippableItemButtonContextMenu_Show(self);
+        if (EquipSetFrame:IsShown()) then
+            local itemLink = self:GetItemLink();
+            if (itemLink) then
+                local invSlot = self.invSlot;
+                if (not invSlot) then
+                    local itemEquipLoc = select(4, GetItemInfoInstant(itemLink));
+                    invSlot = GetInventorySlotIDByEquipLocation(itemEquipLoc);
+                    if (EQUIP_LOC_MULTI_SLOT[itemEquipLoc] and button == "RightButton") then
+                        invSlot = invSlot + 1;
+                    end
+                end
+
+                EquipSetFrame_AddItemToSelectedEquipSet(self:GetItemLink(), invSlot, true);
+            end
+        else
+            EquippableItemButtonContextMenu_Show(self);
+        end
     end
+end
+
+function EquippableItemButton_OnEnter(self, motion)
+	GameTooltip_SetDefaultAnchor(GameTooltip, self);
+
+	if ((self.invSlot and GameTooltip:SetInventoryItem("player", self.invSlot)) or
+        (self.bagID and self.bagSlot and GameTooltip:SetBagItem(self.bagID, self.bagSlot))) then
+		self.UpdateTooltip = EquippableItemButton_OnEnter;
+	else
+		self.UpdateTooltip = nil;
+	end
+end
+
+function EquippableItemButton_OnLeave(self, motion)
+	GameTooltip:Hide();
 end
 
 function EquippableItemButton_OnShow(self)
 end
 
 function EquippableItemButton_OnHide(self)
-end
-
-function EquippableItemButton_OnEnter(self, motion)
-	GameTooltip_SetDefaultAnchor(GameTooltip, self);
-
-    local itemLink = self:GetItemLink();
-    if (itemLink and GameTooltip:SetHyperlink(itemLink)) then
-		self.UpdateTooltip = EquippableItemButton_OnEnter;
-	else
-		self.UpdateTooltip = nil;
-	end
-
-    --[[
-	if ((self.invSlot and GameTooltip:SetInventoryItem("player", self.invSlot)) or
-        (self.itemID and GameTooltip:SetInventoryItemByID(self.itemID))) then
-		self.UpdateTooltip = EquippableItemButton_OnEnter;
-	else
-		self.UpdateTooltip = nil;
-	end
-    ]]
-end
-
-function EquippableItemButton_OnLeave(self, motion)
-	GameTooltip:Hide();
 end
 
 function EquippableItemButton_OnUpdate(self, elapsed)
@@ -277,7 +285,7 @@ local CONTEXTMENU_ITEMSET = EquippableItemButtonContextMenu_MenuListAdd({
 local function EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot, setName)
     local equipSet = FastEquipMenu.GetEquipSet(setName);
     if (equipSet) then
-        local itemLink = button:GetItemLink();--(button.invSlot and GetInventoryItemLink("player", button.invSlot)) or GetContainerItemLink(button.bagID, button.bagSlot);
+        local itemLink = button:GetItemLink();
         if (not itemLink) then
             return;
         end
@@ -302,7 +310,7 @@ function EquippableItemButtonContextMenu_OnLeave(self, motion)
 end
 
 function EquippableItemButtonContextMenu_Show(button)
-    local itemLink = button:GetItemLink();--(button.invSlot and GetInventoryItemLink("player", button.invSlot)) or GetContainerItemLink(button.bagID, button.bagSlot);
+    local itemLink = button:GetItemLink();
     if (not itemLink) then
         return;
     end

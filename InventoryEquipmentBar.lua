@@ -19,6 +19,10 @@ local IMMUNE_TO_DISARM_ITEMS = {
     [12639] = true, -- Stronghold Gauntlets
     [16907] = true, -- Bloodfang Gloves
     [18722] = true, -- Death Grips
+    -- TBC
+    [23072] = true, -- Fists of the Unrelenting
+    [23533] = true, -- Steelgrip Gauntlets
+    [29357] = true, -- Master Thief's Gloves
 };
 
 local InventoryEquipmentBar_Events = {};

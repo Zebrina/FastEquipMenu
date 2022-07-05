@@ -86,6 +86,7 @@ EQUIP_LOC_TO_INV_SLOT_ID = {
     INVTYPE_RANGED = GetInventorySlotID("RANGEDSLOT"),
     INVTYPE_THROWN = GetInventorySlotID("RANGEDSLOT"),
     INVTYPE_RANGEDRIGHT = GetInventorySlotID("RANGEDSLOT"),
+    INVTYPE_RELIC = GetInventorySlotID("RANGEDSLOT"),
 };
 function GetInventorySlotIDByEquipLocation(itemEquipLoc)
     return EQUIP_LOC_TO_INV_SLOT_ID[itemEquipLoc];
@@ -111,9 +112,9 @@ EQUIP_LOC_MULTI_SLOT = {
 };
 
 EQUIP_SLOT_COMBAT_EQUIP = {
-    [INVSLOT_MAINHAND] = true,
-    [INVSLOT_OFFHAND] = true,
-    [INVSLOT_RANGED] = true,
+    INVSLOT_MAINHAND = true,
+    INVSLOT_OFFHAND = true,
+    INVSLOT_RANGED = true,
 }
 
 UNEQUIP_INVENTORY_ITEM_BACKPACK_LAST = true;
@@ -129,6 +130,18 @@ local function PutItemInBagByID(bagID)
             end
         end
     end
+end
+
+function FindItemInBagsByLink(itemLink)
+    local bagID, bagSlot;
+    for bagID = 0, NUM_BAG_SLOTS do
+        for slot = 0, GetContainerNumSlots(bagID) do
+            if (GetContainerItemLink(bagID, slot) == itemLink) then
+                return bagID, slot;
+            end
+        end
+    end
+    return nil, nil
 end
 
 -- TODO: Remove if not needed. Depends on how EquipItemByName distinguishes items with different enchants.
@@ -157,7 +170,9 @@ function UnequipInventoryItem(invSlot)
     end
 
     for bagID = 0, NUM_BAG_SLOTS do
-        PutItemInBagByID(UNEQUIP_INVENTORY_ITEM_BACKPACK_LAST and (NUM_BAG_SLOTS - bagID) or bagID)
+        if (CursorHasItem()) then
+            PutItemInBagByID(UNEQUIP_INVENTORY_ITEM_BACKPACK_LAST and (NUM_BAG_SLOTS - bagID) or bagID);
+        end
     end
 
     -- Clear cursor in case all bags are full.

@@ -4,7 +4,7 @@ FEM = FastEquipMenu;
 
 -- TODO: Don't reset existing data.
 -- PLACEHOLDER CONFIG TABLE
-FEM_GlobalOptions = {
+FEM_GlobalOptions = FEM_GlobalOptions or {
     InventorySlots = {
         ButtonOrder = {
 
@@ -78,7 +78,6 @@ FEM_CharacterOptions = {
 
 };
 
--- TODO: Don't reset existing data.
 FEM_EquipSets = FEM_EquipSets or {};
 
 -- StaticPopup_Show("FEM_ADD_ITEM_SET");
@@ -115,3 +114,52 @@ StaticPopupDialogs["FEM_ADD_ITEM_SET"] = {
     whileDead = 1,
     hideOnEscape = 1,
 };
+
+-- Slash Commands
+
+SLASH_EQUIPSET1 = "/equipset";
+function SlashCmdList.EQUIPSET(equipSetName)
+    FastEquipMenu.EquipSet(equipSetName);
+end
+
+SLASH_REMOVESET1 = "/removeset";
+function SlashCmdList.REMOVESET(equipSetName)
+    FastEquipMenu.RemoveEquipSet(equipSetName);
+end
+
+-- TODO: REMOVE
+SLASH_VIEWSET1 = "/viewset";
+function SlashCmdList.VIEWSET(equipSetName)
+    if (equipSetName) then
+        if (EquipSetFrame:IsShown()) then
+            EquipSetFrame:Hide();
+        end
+        EquipSetFrame.viewedEquipSet = equipSetName;
+        EquipSetFrame:Show();
+    end
+end
+
+SLASH_ADDSET1 = "/addset";
+function SlashCmdList.ADDSET(equipSetName)
+    FastEquipMenu.AddEquipSet(equipSetName);
+end
+
+SLASH_REMOVESET1 = "/removeset";
+function SlashCmdList.REMOVESET(equipSetName)
+    FastEquipMenu.RemoveEquipSet(equipSetName);
+end
+
+SLASH_SAVEREPAIR1 = "/saverepair";
+function SlashCmdList.SAVEREPAIR()
+    FastEquipMenu.EquipItem("EMPTY", 1);
+    FastEquipMenu.EquipItem("EMPTY", 3);
+    FastEquipMenu.EquipItem("EMPTY", 5);
+    FastEquipMenu.EquipItem("EMPTY", 6);
+    FastEquipMenu.EquipItem("EMPTY", 7);
+    FastEquipMenu.EquipItem("EMPTY", 8);
+    FastEquipMenu.EquipItem("EMPTY", 9);
+    FastEquipMenu.EquipItem("EMPTY", 10);
+    FastEquipMenu.EquipItem("EMPTY", 16);
+    FastEquipMenu.EquipItem("EMPTY", 17);
+    FastEquipMenu.EquipItem("EMPTY", 18);
+end

@@ -11,7 +11,9 @@ Utility.lua
 Localization.lua
 FastEquipMenu.lua
 EquipQueueFramework.lua
+EquipSets.lua
 EquippableItemButton.xml
 InventoryEquipmentBar.xml
 ContainerEquipmentFrame.xml
+EquipSetPaperDollFrame.xml
 InterfaceOptionsFrame.xml

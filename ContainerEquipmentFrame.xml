@@ -8,6 +8,8 @@
         </Attributes>
         <Scripts>
 			<OnLoad function="ContainerEquipmentButton_OnLoad"/>
+            <OnDragStart function="ContainerEquipmentButton_OnDragStart"/>
+			<OnReceiveDrag function="ContainerEquipmentButton_OnReceiveDrag"/>
 		</Scripts>
 	</CheckButton>
 	<Frame name="ContainerEquipmentBarTemplate" virtual="true" inherits="SecureFrameTemplate" parent="ContainerEquipmentFrame" parentArray="Bars" frameStrata="MEDIUM" frameLevel="3" hidden="true">

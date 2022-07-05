@@ -1,3 +1,8 @@
+FEM_FAST_EQUIP_MENU                 = "Fast Equip Menu";
+FEM_EQUIP                           = "Equip";
+FEM_CREATE                          = "Create";
+FEM_RENAME                          = "Rename";
+FEM_DELETE                          = "Delete";
 FEM_CONTEXTMENU_EQUIPSETS           = "Item Sets";
 FEM_CONTEXTMENU_EQUIPSETS_NEW       = "New Set";
 FEM_CONTEXTMENU_SLOT_1              = " (Slot 1)";

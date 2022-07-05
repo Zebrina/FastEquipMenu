@@ -340,6 +340,8 @@ function ContainerEquipmentButton_OnLoad(self)
     --self.SpellHighlightTexture:Hide();
 
 	self:RegisterForClicks("AnyUp");
+    self:RegisterForDrag("LeftButton");
+
     for event in pairs(ContainerEquipmentButton_Events) do
         self:RegisterEvent(event);
     end
@@ -361,6 +363,24 @@ end
 
 function ContainerEquipmentButton_OnClick(self, unit, button, actionType)
     ContainerEquipmentFrameContextMenu_Show(self, button == "RightButton");
+end
+
+function ContainerEquipmentButton_OnDragStart(self)
+	if (not InCombatLockdown() and LOCK_ACTIONBAR ~= "1" or IsModifiedClick("PICKUPACTION")) then
+		self:SetChecked(false);
+        if (self.invSlot) then
+            PickupInventoryItem(self.invSlot);
+        else
+            PickupContainerItem(self.bagID, self.bagSlot);
+        end
+	end
+end
+
+function ContainerEquipmentButton_OnReceiveDrag(self)
+	if (not InCombatLockdown() and GetCursorInfo() == "item") then
+		self:SetChecked(false);
+		--PickupContainerItem(self.bagID, self.bagSlot);
+	end
 end
 
 function ContainerEquipmentButton_OnUpdate(self, elapsed)

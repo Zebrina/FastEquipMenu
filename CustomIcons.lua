@@ -1,8 +1,8 @@
 local CustomItemIcons = {
     -- Deepdive Helmet
-    [10506] = "Interface\\AddOns\\EquipmentBars\\Art\\CustomIconDeepdiveHelmet",
+    [10506] = "Interface\\AddOns\\FastEquipMenu\\Art\\CustomIconDeepdiveHelmet",
     -- Gnomish Mind Control Cap
-    [10726] = "Interface\\AddOns\\EquipmentBars\\Art\\CustomIconGnomishMindControlCap",
+    [10726] = "Interface\\AddOns\\FastEquipMenu\\Art\\CustomIconGnomishMindControlCap",
 };
 
 local function GetCustomIconByItemID(itemID)

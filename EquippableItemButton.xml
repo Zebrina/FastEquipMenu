@@ -4,6 +4,7 @@
 	<CheckButton name="EquippableItemButtonTemplate" virtual="true" inherits="SecureActionButtonTemplate, ActionButtonTemplate" frameStrata="MEDIUM">
         <Attributes>
             <Attribute name="shift-type2" value="_onclick"/>
+            <Attribute name="alt-type1" value="_onclick"/>
             <Attribute name="alt-type2" value="_onclick"/>
         </Attributes>
         <Size x="36" y="36"/>
