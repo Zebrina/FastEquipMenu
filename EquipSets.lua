@@ -1,3 +1,8 @@
+-- Classic only.
+if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+    return;
+end
+
 local function EquipSetKey(name)
     if (name == nil or name == "") then
         return "";

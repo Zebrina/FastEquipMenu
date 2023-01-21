@@ -193,18 +193,29 @@
                 <Scripts>
         			<OnLoad>
                         self.invSlotName = "SECONDARYHANDSLOT";
+						self.shouldShow = function()
+							return GetInventoryItemID("player", self.invSlot) ~= nil;
+						end;
                         self.proxyButton = CharacterSecondaryHandSlot;
         				InventoryEquipmentButton_OnLoad(self);
         			</OnLoad>
                 </Scripts>
 			</CheckButton>
+			<!-- Only for Classic. -->
 			<CheckButton name="InventoryEquipmentButtonRanged" inherits="InventoryEquipmentButton">
                 <Scripts>
         			<OnLoad>
-                        self.invSlotName = "RANGEDSLOT";
-                        self.checkRelic = true;
-                        self.proxyButton = CharacterRangedSlot;
-        				InventoryEquipmentButton_OnLoad(self);
+						self.invSlotName = "RANGEDSLOT";
+						self.checkRelic = true;
+						self.shouldShow = function()
+							return WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE;
+						end;
+						self.proxyButton = CharacterRangedSlot;
+						if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+							self:Hide();
+						else
+							InventoryEquipmentButton_OnLoad(self);
+						end
         			</OnLoad>
                 </Scripts>
 			</CheckButton>

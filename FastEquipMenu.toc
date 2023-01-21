@@ -1,11 +1,11 @@
 ## Interface: 11300
 ## Title: Fast-Equip-Menu
 ## Version: 1.0.0
-## OptionalDeps: Masque
+## OptionalDeps: ClassicUI, Masque
 ## Notes:
 ## Author: Zebrina
 ## SavedVariables: FEM_GlobalOptions
-## SavedVariablesPerCharacter: FEM_CharacterOptions, FEM_EquipSets
+## SavedVariablesPerCharacter: FEM_CharacterOptions, FEM_LastEquipped, FEM_EquipSets
 
 Utility.lua
 Localization.lua
@@ -17,3 +17,4 @@ InventoryEquipmentBar.xml
 ContainerEquipmentFrame.xml
 EquipSetPaperDollFrame.xml
 InterfaceOptionsFrame.xml
+Masque.lua

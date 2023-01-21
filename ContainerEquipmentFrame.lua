@@ -24,6 +24,10 @@ local ContainerEquipmentFrame_Events = {};
 local ContainerEquipmentBar_Events = {};
 local ContainerEquipmentButton_Events = {};
 
+-- Masque
+local MasqueLib = LibStub("Masque", true) or (LibMasque and LibMasque("Button"));
+local MasqueGroup = MasqueLib and MasqueLib:Group(FEM_FAST_EQUIP_MENU, FEM_INVENTORY_BUTTONS, true)
+
 local function ContainerEquipmentFrame_Update(self)
     if (not self.updateBags) then
         return;
@@ -95,11 +99,7 @@ function ContainerEquipmentFrame_UpdatePosition(self)
         return;
     end
 
-    if (SHOW_MULTI_ACTIONBAR_3) then
-        self:SetPoint("TOPRIGHT", SHOW_MULTI_ACTIONBAR_4 and MultiBarLeft or MultiBarRight, "TOPLEFT", -2, 0);
-    else
-        self:SetPoint("TOPRIGHT", UIParent, "RIGHT", 0, select(5, VerticalMultiBarsContainer:GetPoint()) + (VERTICAL_MULTI_BAR_HEIGHT / 2));
-    end
+    self:SetPoint("TOPRIGHT", InventoryEquipmentBar, "TOPLEFT", -4, 0);
 end
 
 function ContainerEquipmentFrame_OnLoad(self)
@@ -263,7 +263,8 @@ function ContainerEquipmentBar_UpdateButtons(self)
             self.Buttons[i]:Hide();
         end
 
-        EquippableItemButtonFrame_UpdateGridLayout(self, "TOPLEFT", numItems, INVENTORYBAR_BUTTONS_PER_ROW, true);
+        local _, height = EquippableItemButtonFrame_UpdateGridLayout(self, "TOPLEFT", numItems, INVENTORYBAR_BUTTONS_PER_ROW, true);
+        EquippableItemButtonFrame_UpdateGridSize(self, INVENTORYBAR_BUTTONS_PER_ROW, height);
         self:Show();
     else
         self:Hide();
@@ -278,6 +279,10 @@ function ContainerEquipmentBar_GetButton(self, index)
         self.Buttons[index] = button;
         if (getn(self.Buttons) < index) then
             setn(self.Buttons, index);
+        end
+        -- Masque
+        if (MasqueGroup) then
+            MasqueGroup:AddButton(button);
         end
     end
     return button;

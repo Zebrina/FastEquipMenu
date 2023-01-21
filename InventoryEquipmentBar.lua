@@ -1,9 +1,10 @@
-NUM_EQUIPMENT_BAR_BUTTONS = 17;
-EQUIPMENT_BAR_YPOS = 1;
-EQUIPMENT_BAR_XPOS = 0;
-EQUIPMENTBUTTON_SIZE_X = 30;
-EQUIPMENTBUTTON_SIZE_Y = 30;
-EQUIPMENTBUTTON_SPACING = 4;
+local isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE);
+
+if (isClassic) then
+    NUM_EQUIPMENT_BAR_BUTTONS = 17;
+else
+    NUM_EQUIPMENT_BAR_BUTTONS = 16;
+end
 
 EQUIPMENTBUTTON_BORDER_WIDTH = 6;
 EQUIPMENTBUTTON_BORDER_HEIGHT = 7;
@@ -50,7 +51,9 @@ end
 
 local function InventoryEquipmentBar_ForEachButton(self, callback)
     for i, button in ipairs(self.Buttons) do
-        callback(button, i);
+        if (button:IsShown()) then
+            callback(button, i);
+        end
     end
 end
 
@@ -58,16 +61,8 @@ local function InventoryEquipmentBar_GetVisibleButtons(self)
 
 end
 
+-- TODO: Unused!
 local function InventoryEquipmentBar_UpdateLayout(self)
-    --local rows = 2;
-
-    --local visibleButtons = {};
-
-    --local numButtonsPerRow = ceil(getn(visibleButtons) / rows);
-
-    --self:SetWidth(numButtonsPerRow * (EQUIPMENTBUTTON_SIZE_X + EQUIPMENTBUTTON_SPACING));
-    --self:SetHeight(numButtonsPerRow * (EQUIPMENTBUTTON_SIZE_Y + EQUIPMENTBUTTON_SPACING));
-
     sort(self.Buttons, function(x, y)
         if (x.placeAfter == y.invSlotName) then
             return false;
@@ -78,53 +73,32 @@ local function InventoryEquipmentBar_UpdateLayout(self)
     end);
 end
 
-local function InventoryEquipmentBar_GetNumVisibleButtons(self)
-    local count = 0;
-    for _, button in pairs(self.Buttons) do
-        if (button:IsVisible()) then
-            count = count + 1;
-        end
-    end
-    return count;
-end
-
 function InventoryEquipmentBar_UpdatePosition(self)
-    local point, relativeTo, relativePoint, xOfs, yOfs;
-    if (self.freePlacement) then
-        point = "CENTER";
-        relativeTo = UIParent;
-        relativePoint = "CENTER";
-        xOfs = self.freePosX;
-        yOfs = self.freePosY;
-    elseif (SHOW_MULTI_ACTIONBAR_2) then
-        point = "BOTTOM";
-        relativeTo = MultiBarBottomRight;
-        relativePoint = "TOP";
-        xOfs = EQUIPMENT_BAR_XPOS;
-        yOfs = EQUIPMENT_BAR_YPOS;
-    elseif (SHOW_MULTI_ACTIONBAR_1) then
-        point = "BOTTOMLEFT";
-        relativeTo = MultiBarBottomLeft;
-        relativePoint = "BOTTOMRIGHT";
-        xOfs = EQUIPMENT_BAR_XPOS + EQUIPMENTBUTTON_SPACING;
-        yOfs = EQUIPMENT_BAR_YPOS;
-    else
-        point = "BOTTOM";
-        relativeTo = MainMenuBarOverlayFrame;
-        relativePoint = "TOP";
-        xOfs = EQUIPMENT_BAR_XPOS + (MainMenuBarOverlayFrame:GetWidth() * 0.25);
-        yOfs = EQUIPMENT_BAR_YPOS;
+    if (InCombatLockdown()) then
+        self.updateAfterCombat = true;
+        return;
     end
 
-    self:ClearAllPoints();
-    self:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs);
+    self.updateAfterCombat = nil;
 
-    --local numButtons = InventoryEquipmentBar_GetNumVisibleButtons(self);
-    --local firstButton = self.Buttons[1];
-    --self:SetWidth((firstButton:GetWidth() * numButtons) + (EQUIPMENTBUTTON_SPACING * (numButtons + 1)));
+    local point, relativeTo, relativePoint, xOfs, yOfs;
 
-    local numButtons = InventoryEquipmentBar_GetNumVisibleButtons(self);
-    EquippableItemButtonFrame_UpdateGridLayout(self, "BOTTOMLEFT", numButtons, numButtons, true);
+    --local classicUI = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) or IsAddOnLoaded("ClassicUI");
+    if (self.freePlacement) then
+        self:SetPoint("CENTER", UIParent, "CENTER", self.freePosX, self.freePosY);
+    --elseif (classicUI and SHOW_MULTI_ACTIONBAR_2) then
+    --  self:SetPoint("BOTTOM", MultiBarBottomRightButton1, "TOP", 182, 4.5);
+    --elseif (SHOW_MULTI_ACTIONBAR_1) then
+    --  self:SetPoint("BOTTOMLEFT", MultiBarBottomLeft, "BOTTOMRIGHT", 0, 1);
+    elseif (SHOW_MULTI_ACTIONBAR_3) then
+        self:SetPoint("TOPRIGHT", SHOW_MULTI_ACTIONBAR_4 and MultiBarLeft or MultiBarRight, "TOPLEFT", -2, -2.5);
+    else
+        self:SetPoint("TOPRIGHT", UIParent, "RIGHT", 0, select(5, VerticalMultiBarsContainer:GetPoint()) + (VERTICAL_MULTI_BAR_HEIGHT / 2));
+    end
+
+    local numButtons = getn(self.Buttons);
+    local width, height = EquippableItemButtonFrame_UpdateGridLayout(self, "BOTTOMLEFT", numButtons, numButtons, false, true);
+    EquippableItemButtonFrame_UpdateGridSize(self, width, height);
 end
 
 function InventoryEquipmentBar_OnLoad(self)
@@ -133,25 +107,13 @@ function InventoryEquipmentBar_OnLoad(self)
     self:SetClampedToScreen(true);
 
     self.ButtonsByInvSlot = {};
-    for i = 1, #self.Buttons do
-        local button = self.Buttons[i];
+    InventoryEquipmentBar_ForEachButton(self, function(button, i)
         self.ButtonsByInvSlot[button.invSlot] = button;
         button.defaultOrder = i;
-    end
+    end);
 
     self.borderSizeBottom = 4;
     self.buttonSpacing = 4;
-
-    hooksecurefunc("MultiActionBar_Update", function()
-        if (not InCombatLockdown()) then
-            InventoryEquipmentBar_UpdatePosition(self);
-        else
-            self.updatePositon = true;
-        end
-    end);
-
-    InventoryEquipmentBar_UpdatePosition(self);
-    self:Show();
 
     self.rangeTimer = -1;
 
@@ -164,8 +126,17 @@ function InventoryEquipmentBar_OnEvent(self, event, ...)
     InventoryEquipmentBar_Events[event](self, ...);
 end
 
+function InventoryEquipmentBar_Events.PLAYER_ENTERING_WORLD(self)
+    hooksecurefunc("MultiActionBar_Update", function()
+        InventoryEquipmentBar_UpdatePosition(self);
+    end);
+
+    InventoryEquipmentBar_UpdatePosition(self);
+    self:Show();
+end
+
 function InventoryEquipmentBar_Events.PLAYER_REGEN_ENABLED(self)
-    if (self.updatePositon) then
+    if (self.updateAfterCombat) then
         InventoryEquipmentBar_UpdatePosition(self);
     end
 end
@@ -174,6 +145,9 @@ function InventoryEquipmentBar_Events.PLAYER_EQUIPMENT_CHANGED(self, equipmentSl
     local button = self.ButtonsByInvSlot[equipmentSlot];
     if (button) then
         InventoryEquipmentButton_UpdateIcon(button);
+        if (button:ShouldShow() ~= button:IsShown()) then
+            InventoryEquipmentBar_UpdatePosition(self);
+        end
     end
 end
 
@@ -226,6 +200,13 @@ function InventoryEquipmentButtonMixin.GetItemLink(self)
     return GetInventoryItemLink("player", self.invSlot);
 end
 
+function InventoryEquipmentButtonMixin.ShouldShow(self)
+    if (self.shouldShow) then
+        return self.shouldShow();
+    end
+    return true;
+end
+
 function InventoryEquipmentButton_OnLoad(self)
     EquippableItemButton_OnLoad(self);
 
@@ -275,6 +256,7 @@ function InventoryEquipmentButton_Events.PLAYER_ENTERING_WORLD(self)
         self.emptyTextureName = "Interface\\Paperdoll\\UI-PaperDoll-Slot-Relic.blp";
     end
     InventoryEquipmentButton_UpdateIcon(self);
+    self.hasCurrent = GetInventoryItemID("player", self.invSlot) ~= nil;
 end
 
 function InventoryEquipmentButton_Events.ITEM_LOCK_CHANGED(self, bagOrSlotIndex, slotIndex)

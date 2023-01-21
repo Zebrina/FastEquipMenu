@@ -184,7 +184,7 @@ end
 
 local DEFAULT_BUTTON_SPACING = 4;
 
-function EquippableItemButtonFrame_UpdateGridLayout(self, point, maxButtons, widthOrHeight, horizontalGrowth)
+function EquippableItemButtonFrame_UpdateGridLayout(self, point, maxButtons, widthOrHeight, horizontalGrowth, reverseGrowth)
     -- TODO: Change all button arrays to 'Buttons' (capitalized).
     local buttons = self.Buttons or self.buttons;
     if (buttons == nil or buttons[1] == nil) then
@@ -214,46 +214,69 @@ function EquippableItemButtonFrame_UpdateGridLayout(self, point, maxButtons, wid
         xDir, yDir, xOfs, yOfs = -1, -1, borderSizeRight, borderSizeTop;
     end
 
-    local width, height;
-    if (horizontalGrowth) then
-        width = widthOrHeight;
-        height = 1;
-    else
-        width = 1;
-        height = widthOrHeight;
-    end
-
-    local numButtons = #buttons;
-    local x, y = 1, 1;
-    for index, button in ipairs(buttons) do
-        if (index <= maxButtons) then
+    local numButtons = getn(buttons);
+    local numVisibleButtons = 0;
+    local x, y = 0, 0;
+    for i = 1, numButtons do
+        local button = reverseGrowth and buttons[numButtons - (i - 1)] or buttons[i];
+        if (i <= maxButtons and (not button.ShouldShow or button:ShouldShow())) then
             button:ClearAllPoints();
 
-            local xPos = xDir * (xOfs + (x - 1) * (buttonWidth + buttonSpacing));
-            local yPos = yDir * (yOfs + (y - 1) * (buttonHeight + buttonSpacing));
+            local xPos = xDir * (xOfs + x * (buttonWidth + buttonSpacing));
+            local yPos = yDir * (yOfs + y * (buttonHeight + buttonSpacing));
             button:SetPoint(point, xPos, yPos);
 
             if (horizontalGrowth) then
                 x = x + 1;
-                if (index < maxButtons and x > width) then
-                    x = 1;
+                if (x >= widthOrHeight) then
+                    x = 0;
                     y = y + 1;
-                    height = y;
                 end
             else
                 y = y + 1;
-                if (index < maxButtons and y > height) then
-                    y = 1;
+                if (y >= widthOrHeight) then
+                    y = 0;
                     x = x + 1;
-                    width = x;
                 end
             end
 
             button:Show();
+
+            numVisibleButtons = numVisibleButtons + 1;
         else
             button:Hide();
         end
     end
+
+    local width, height;
+    if (horizontalGrowth) then
+        width = min(numVisibleButtons, widthOrHeight);
+        height = ceil(numVisibleButtons / widthOrHeight);
+    else
+        width = ceil(numVisibleButtons / widthOrHeight);
+        height = min(numVisibleButtons, widthOrHeight);
+    end
+
+    return width, height;
+end
+
+function EquippableItemButtonFrame_UpdateGridSize(self, width, height)
+    -- TODO: Change all button arrays to 'Buttons' (capitalized).
+    local buttons = self.Buttons or self.buttons;
+    if (buttons == nil or buttons[1] == nil) then
+        return;
+    end
+
+    local borderSizeTop = self.borderSizeTop or self.borderHeight or 0;
+    local borderSizeBottom = self.borderSizeBottom or self.borderHeight or 0;
+    local borderSizeLeft = self.borderSizeLeft or self.borderWidth or 0;
+    local borderSizeRight = self.borderSizeRight or self.borderWidth or 0;
+    local buttonSpacing = self.buttonSpacing or DEFAULT_BUTTON_SPACING;
+
+    local buttonWidth, buttonHeight = buttons[1]:GetSize();
+    local buttonScale = buttons[1]:GetScale();
+    buttonWidth = buttonWidth * buttonScale;
+    buttonHeight = buttonHeight * buttonScale;
 
     self:SetSize(borderSizeLeft + borderSizeRight + width * (buttonWidth + buttonSpacing) - buttonSpacing,
                  borderSizeTop + borderSizeBottom + height * (buttonHeight + buttonSpacing) - buttonSpacing);
@@ -266,7 +289,7 @@ local EquippableItemButtonContextMenu_MenuList = {};
 
 local function EquippableItemButtonContextMenu_MenuListAdd(entry)
     tinsert(EquippableItemButtonContextMenu_MenuList, entry);
-    return #EquippableItemButtonContextMenu_MenuList;
+    return getn(EquippableItemButtonContextMenu_MenuList);
 end
 
 local CONTEXTMENU_TITLE = EquippableItemButtonContextMenu_MenuListAdd({
@@ -274,13 +297,15 @@ local CONTEXTMENU_TITLE = EquippableItemButtonContextMenu_MenuListAdd({
     isTitle = true,
     justifyH = "CENTER",
 });
-local CONTEXTMENU_ITEMSET = EquippableItemButtonContextMenu_MenuListAdd({
-    text = FEM_CONTEXTMENU_EQUIPSETS,
-    value = "ITEMSETS",
-    notCheckable = true,
-    isNotRadio = true,
-    hasArrow = true,
-});
+if (isClassic) then
+    local CONTEXTMENU_ITEMSET = EquippableItemButtonContextMenu_MenuListAdd({
+        text = FEM_CONTEXTMENU_EQUIPSETS,
+        value = "ITEMSETS",
+        notCheckable = true,
+        isNotRadio = true,
+        hasArrow = true,
+    });
+end
 
 local function EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot, setName)
     local equipSet = FastEquipMenu.GetEquipSet(setName);
@@ -322,42 +347,44 @@ function EquippableItemButtonContextMenu_Show(button)
     EquippableItemButtonContextMenu.relativeTo = button;
     EquippableItemButtonContextMenu_Button = button;
 
-    local itemSets = EquippableItemButtonContextMenu_MenuList[CONTEXTMENU_ITEMSET];
-    itemSets.menuList = {};
-    for _, equipSet in pairs(FEM_EquipSets) do
-        tinsert(itemSets.menuList, {
-            text = equipSet.name..(button.multiSlot and FEM_CONTEXTMENU_SLOT_1 or ""),
-            checked = function()
-                return equipSet.items[itemSlot] == itemLink;
-            end,
-            isNotRadio = true,
-            keepShownOnClick = true,
-            func = function(self)
-                EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot, equipSet.name);
-            end,
-        });
-        if (button.multiSlot) then
+    if (isClassic) then
+        local itemSets = EquippableItemButtonContextMenu_MenuList[CONTEXTMENU_ITEMSET];
+        itemSets.menuList = {};
+        for _, equipSet in pairs(FEM_EquipSets) do
             tinsert(itemSets.menuList, {
-                text = equipSet.name..FEM_CONTEXTMENU_SLOT_2,
+                text = equipSet.name..(button.multiSlot and FEM_CONTEXTMENU_SLOT_1 or ""),
                 checked = function()
-                    return equipSet.items[itemSlot + 1] == itemLink;
+                    return equipSet.items[itemSlot] == itemLink;
                 end,
                 isNotRadio = true,
                 keepShownOnClick = true,
                 func = function(self)
-                    EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot + 1, equipSet.name);
+                    EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot, equipSet.name);
                 end,
             });
+            if (button.multiSlot) then
+                tinsert(itemSets.menuList, {
+                    text = equipSet.name..FEM_CONTEXTMENU_SLOT_2,
+                    checked = function()
+                        return equipSet.items[itemSlot + 1] == itemLink;
+                    end,
+                    isNotRadio = true,
+                    keepShownOnClick = true,
+                    func = function(self)
+                        EquippableItemButtonContextMenu_UpdateItemSet(button, itemSlot + 1, equipSet.name);
+                    end,
+                });
+            end
         end
+        tinsert(itemSets.menuList, {
+            text = FEM_CONTEXTMENU_EQUIPSETS_NEW,
+            notCheckable = true,
+            isNotRadio = true,
+            func = function(self)
+                StaticPopup_Show("FEM_ADD_ITEM_SET");
+            end
+        });
     end
-    tinsert(itemSets.menuList, {
-        text = FEM_CONTEXTMENU_EQUIPSETS_NEW,
-        notCheckable = true,
-        isNotRadio = true,
-        func = function(self)
-            StaticPopup_Show("FEM_ADD_ITEM_SET");
-        end
-    });
 
     EasyMenu(EquippableItemButtonContextMenu_MenuList, EquippableItemButtonContextMenu, nil, 0, 0, "MENU", 1);
 end

@@ -6,13 +6,26 @@ local _PORTRAITTEXTURE = "Interface\\AddOns\\FastEquipMenu\\Art\\CustomIconDeepd
 
 
 
-
+local isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE);
 
 local EquipSetFrame_Events = {};
 local EquipSetPaperDollFrame_Events = {};
 local EquipSetPaperDollItemSlotButton_Events = {};
 
+local function EquipSetPaperDollItemsFrame_ForEachButton(self, callback)
+    for i, button in ipairs(self.Buttons) do
+        if (button:IsShown()) then
+            callback(button, i);
+        end
+    end
+end
+
 function EquipSetFrame_OnLoad(self)
+    if (not isClassic) then
+        self:Hide();
+        return;
+    end
+
     self:RegisterForDrag("LeftButton");
 
     for event in pairs(EquipSetFrame_Events) do
@@ -90,11 +103,14 @@ function EquipSetFrame_AddItemToSelectedEquipSet(itemLink, invSlot, toggle)
 end
 
 function EquipSetPaperDollFrame_OnLoad(self)
-    EquipSetPaperDollItemsFrame.ButtonsByInvSlot = {};
-    for i = 1, getn(EquipSetPaperDollItemsFrame.Buttons) do
-        local button = EquipSetPaperDollItemsFrame.Buttons[i];
-        EquipSetPaperDollItemsFrame.ButtonsByInvSlot[button.invSlot] = button;
+    if (not isClassic) then
+        return;
     end
+
+    EquipSetPaperDollItemsFrame.ButtonsByInvSlot = {};
+    EquipSetPaperDollItemsFrame_ForEachButton(EquipSetPaperDollItemsFrame, function(button, i)
+        EquipSetPaperDollItemsFrame.ButtonsByInvSlot[button.invSlot] = button;
+    end);
 
     EquipSetEditDropDown:SetScale(0.87);
     EquipSetInheritDropDown:SetScale(0.87);
@@ -150,7 +166,19 @@ function EquipsetPaperDollFrame_UpdateModel()
     end
 end
 
+function EquipSetModelFrame_OnLoad(self)
+    if (not isClassic) then
+        return;
+    end
+
+    self:SetScript("OnUpdate", Model_OnUpdate);
+	Model_OnLoad(self, MODELFRAME_MAX_PLAYER_ZOOM);
+end
+
 function EquipSetEditDropDown_OnLoad(self)
+    if (not isClassic) then
+        return;
+    end
 end
 
 function EquipSetEditDropDown_OnShow(self)
@@ -195,6 +223,9 @@ function EquipSetEditDropDown_Initialize()
 end
 
 function EquipSetInheritDropDown_OnLoad(self)
+    if (not isClassic) then
+        return;
+    end
 end
 
 function EquipSetInheritDropDown_OnShow(self)
@@ -203,6 +234,10 @@ function EquipSetInheritDropDown_OnShow(self)
 end
 
 function EquipSetPaperDollItemSlotButton_OnLoad(self)
+    if (not isClassic) then
+        return;
+    end
+
     local slotID, textureName = GetInventorySlotInfo(self.invSlotName);
     self.invSlot = slotID;
     self.emptyTextureName = textureName;

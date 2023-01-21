@@ -1,4 +1,6 @@
 FEM_FAST_EQUIP_MENU                 = "Fast Equip Menu";
+FEM_EQUIPMENT_BUTTONS               = "Equipment Buttons";
+FEM_INVENTORY_BUTTONS               = "Inventory Buttons";
 FEM_EQUIP                           = "Equip";
 FEM_CREATE                          = "Create";
 FEM_RENAME                          = "Rename";

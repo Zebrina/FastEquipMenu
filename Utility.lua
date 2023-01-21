@@ -1,5 +1,17 @@
+local isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE);
+
 --  922035 TOPLEFT -8 8
 TEXTURE_FAVORITE = 922035;
+
+if (isClassic) then
+    PlayerCastingInfo = function()
+        return CastingInfo();
+    end
+else
+    PlayerCastingInfo = function()
+        return UnitCastingInfo("player");
+    end
+end
 
 function GetItemLink(item)
     local _, itemLink = GetItemInfo(item);
@@ -48,7 +60,6 @@ INVSLOT_HEAD = GetInventorySlotID("HEADSLOT");
 INVSLOT_NECK = GetInventorySlotID("NECKSLOT");
 INVSLOT_SHOULDER = GetInventorySlotID("SHOULDERSLOT");
 INVSLOT_CHEST = GetInventorySlotID("CHESTSLOT");
-INVSLOT_ROBE = GetInventorySlotID("CHESTSLOT");
 INVSLOT_WAIST = GetInventorySlotID("WAISTSLOT");
 INVSLOT_LEGS = GetInventorySlotID("LEGSSLOT");
 INVSLOT_FEET = GetInventorySlotID("FEETSLOT");
@@ -58,10 +69,38 @@ INVSLOT_FINGER1 = GetInventorySlotID("FINGER0SLOT");
 INVSLOT_FINGER2 = GetInventorySlotID("FINGER1SLOT");
 INVSLOT_TRINKET1 = GetInventorySlotID("TRINKET0SLOT");
 INVSLOT_TRINKET2 = GetInventorySlotID("TRINKET1SLOT");
-INVSLOT_CLOAK = GetInventorySlotID("BACKSLOT");
+INVSLOT_BACK = GetInventorySlotID("BACKSLOT");
 INVSLOT_MAINHAND = GetInventorySlotID("MAINHANDSLOT");
 INVSLOT_OFFHAND = GetInventorySlotID("SECONDARYHANDSLOT");
-INVSLOT_RANGED = GetInventorySlotID("RANGEDSLOT");
+if (isClassic) then
+    INVSLOT_RANGED = GetInventorySlotID("RANGEDSLOT");
+end
+local inventorySlots = {
+    INVSLOT_HEAD,
+    INVSLOT_NECK,
+    INVSLOT_SHOULDER,
+    INVSLOT_CHEST,
+    INVSLOT_WAIST,
+    INVSLOT_LEGS,
+    INVSLOT_FEET,
+    INVSLOT_WRIST,
+    INVSLOT_HAND,
+    INVSLOT_FINGER1,
+    INVSLOT_FINGER2,
+    INVSLOT_TRINKET1,
+    INVSLOT_TRINKET2,
+    INVSLOT_BACK,
+    INVSLOT_MAINHAND,
+    INVSLOT_OFFHAND,
+}
+if (isClassic) then
+    tinsert(inventorySlots, INVSLOT_RANGED);
+end
+function ForEachInventorySlot(callback)
+    for i = 1, #inventorySlots do
+        callback(inventorySlots[i]);
+    end
+end
 
 EQUIP_LOC_TO_INV_SLOT_ID = {
     INVTYPE_HEAD = GetInventorySlotID("HEADSLOT"),
@@ -83,11 +122,13 @@ EQUIP_LOC_TO_INV_SLOT_ID = {
     INVTYPE_WEAPONMAINHAND = GetInventorySlotID("MAINHANDSLOT"),
     INVTYPE_WEAPONOFFHAND = GetInventorySlotID("SECONDARYHANDSLOT"),
     INVTYPE_HOLDABLE = GetInventorySlotID("SECONDARYHANDSLOT"),
-    INVTYPE_RANGED = GetInventorySlotID("RANGEDSLOT"),
-    INVTYPE_THROWN = GetInventorySlotID("RANGEDSLOT"),
-    INVTYPE_RANGEDRIGHT = GetInventorySlotID("RANGEDSLOT"),
-    INVTYPE_RELIC = GetInventorySlotID("RANGEDSLOT"),
 };
+if (isClassic) then
+    EQUIP_LOC_TO_INV_SLOT_ID.INVTYPE_RANGED = GetInventorySlotID("RANGEDSLOT");
+    EQUIP_LOC_TO_INV_SLOT_ID.INVTYPE_THROWN = GetInventorySlotID("RANGEDSLOT");
+    EQUIP_LOC_TO_INV_SLOT_ID.INVTYPE_RANGEDRIGHT = GetInventorySlotID("RANGEDSLOT");
+    EQUIP_LOC_TO_INV_SLOT_ID.INVTYPE_RELIC = GetInventorySlotID("RANGEDSLOT");
+end
 function GetInventorySlotIDByEquipLocation(itemEquipLoc)
     return EQUIP_LOC_TO_INV_SLOT_ID[itemEquipLoc];
 end
