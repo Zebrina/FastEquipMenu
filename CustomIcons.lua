@@ -5,6 +5,7 @@ local CustomItemIcons = {
     [10726] = "Interface\\AddOns\\FastEquipMenu\\Art\\CustomIconGnomishMindControlCap",
 };
 
+--[[
 local function GetCustomIconByItemID(itemID)
     local customTexture = nil;
     if (itemID) then
@@ -52,3 +53,4 @@ function GetInventoryItemTexture(unit, invSlot)
     local itemID = GetInventoryItemID(unit, invSlot);
     return GetCustomIconByItemID(itemID) or oldGetInventoryItemTexture(unit, invSlot);
 end
+]]

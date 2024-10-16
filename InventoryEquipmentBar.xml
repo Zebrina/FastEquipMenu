@@ -4,7 +4,7 @@
 	<CheckButton name="InventoryEquipmentButton" parentArray="Buttons" virtual="true" inherits="EquippableItemButtonTemplate" mixin="InventoryEquipmentButtonMixin" frameStrata="MEDIUM">
         <Attributes>
             <Attribute name="checkselfcast" value="true" type="boolean"/>
-            <Attribute name="type1" value="item"/>
+            <Attribute name="type1" value="macro"/>
         </Attributes>
         <Size x="30" y="30"/>
 		<Layers>

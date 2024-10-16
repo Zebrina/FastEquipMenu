@@ -173,7 +173,7 @@ function EquippableItemButton_UpdateRangeIndicator(self)
     if (itemID) then
         local _, spellID = GetItemSpell(itemID);
         if (spellID) then
-            inRange = IsItemInRange(itemID);
+            inRange = IsItemInRange(itemID, "target");
             checksRange = inRange ~= nil;
         end
     end

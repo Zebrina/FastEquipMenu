@@ -36,11 +36,11 @@ local function ContainerEquipmentFrame_Update(self)
     CONTAINEREQUIPMENTFRAME_ITEMCACHE = {};
 
     for bagID = 0, NUM_BAG_SLOTS do
-        local _, bagType = GetContainerNumFreeSlots(bagID);
+        local _, bagType = C_Container.GetContainerNumFreeSlots(bagID);
         -- Skip non-regular bags
         if (bagType == 0) then
-            for slot = 1, GetContainerNumSlots(bagID) do
-                local itemID = GetContainerItemID(bagID, slot);
+            for slot = 1, C_Container.GetContainerNumSlots(bagID) do
+                local itemID = C_Container.GetContainerItemID(bagID, slot);
                 if (itemID) then
                     local _, _, _, itemEquipLoc, _, itemClassID, itemSubClassID = GetItemInfoInstant(itemID);
                     --[[ Ignore items that match one of the following:
@@ -55,7 +55,7 @@ local function ContainerEquipmentFrame_Update(self)
                         tinsert(CONTAINEREQUIPMENTFRAME_ITEMCACHE, {
                             itemSlot = EQUIP_LOC_TO_INV_SLOT_ID[itemEquipLoc],
                             itemID = itemID,
-                            itemLink = GetContainerItemLink(bagID, slot),
+                            itemLink = C_Container.GetContainerItemLink(bagID, slot),
                             bagID = bagID,
                             bagSlot = slot,
                             bagOrder = bagID * 36 + slot,
@@ -129,7 +129,7 @@ end
 
 function ContainerEquipmentFrame_Events.BAG_UPDATE(self, slot)
     -- Skip non-regular bags
-    if (select(2, GetContainerNumFreeSlots(slot)) == 0) then
+    if (select(2, C_Container.GetContainerNumFreeSlots(slot)) == 0) then
         self.updateBags = true;
     end
 end
@@ -321,7 +321,7 @@ end
 
 function ContainerEquipmentBar_OnUpdate(self, elapsed)
     ContainerEquipmentBar_ForEachButton(self, function(button)
-        local start, duration, enable = GetItemCooldown(button.itemID);
+        local start, duration, enable = C_Container.GetItemCooldown(button.itemID);
 		CooldownFrame_Set(button.cooldown, start, duration, enable);
 		if (GameTooltip:GetOwner() == button) then
 			EquippableItemButton_OnEnter(button);
@@ -463,7 +463,7 @@ end
 function ContainerEquipmentButton_UpdateLocked(self)
     local locked = false;
     if (self.bagID and self.bagSlot) then
-        locked = select(3, GetContainerItemInfo(self.bagID, self.bagSlot));
+        locked = select(3, C_Container.GetContainerItemInfo(self.bagID, self.bagSlot));
     end
     SetItemButtonDesaturated(self, locked);
 end

@@ -33,7 +33,7 @@ function GetInventoryItemEnchant(unit, slot)
     return GetItemEnchant(GetInventoryItemLink(unit, slot));
 end
 function GetContainerItemEnchant(bagID, slot)
-    return GetItemEnchant(GetContainerItemLink(bagID, slot));
+    return GetItemEnchant(C_Container.GetContainerItemLink(bagID, slot));
 end
 
 function IsContainerItemBound(bagID, slot)
@@ -48,7 +48,7 @@ end
 
 function ForEachContainerSlot(callback)
     for bagID = 0, NUM_BAG_SLOTS do
-        for slot = 0, GetContainerNumSlots(bagID) do
+        for slot = 0, C_Container.GetContainerNumSlots(bagID) do
             if (callback(bagID, slot)) then
                 return;
             end
@@ -162,7 +162,7 @@ UNEQUIP_INVENTORY_ITEM_BACKPACK_LAST = true;
 
 local function PutItemInBagByID(bagID)
     if (bagID >= 0 and bagID <= NUM_BAG_SLOTS and CursorHasItem()) then
-        local numFreeSlots, bagType = GetContainerNumFreeSlots(bagID);
+        local numFreeSlots, bagType = C_Container.GetContainerNumFreeSlots(bagID);
         if (bagType == 0 and numFreeSlots > 0) then
             if (bagID == 0) then
                 PutItemInBackpack();

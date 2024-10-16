@@ -91,7 +91,7 @@ function InventoryEquipmentBar_UpdatePosition(self)
     --elseif (SHOW_MULTI_ACTIONBAR_1) then
     --  self:SetPoint("BOTTOMLEFT", MultiBarBottomLeft, "BOTTOMRIGHT", 0, 1);
     elseif (SHOW_MULTI_ACTIONBAR_3) then
-        self:SetPoint("TOPRIGHT", SHOW_MULTI_ACTIONBAR_4 and MultiBarLeft or MultiBarRight, "TOPLEFT", -2, -2.5);
+        self:SetPoint("TOPRIGHT", SHOW_MULTI_ACTIONBAR_4 and MultiBarLeft or MultiBarRight, "TOPLEFT", -2, -2.5 + 50);
     else
         self:SetPoint("TOPRIGHT", UIParent, "RIGHT", 0, select(5, VerticalMultiBarsContainer:GetPoint()) + (VERTICAL_MULTI_BAR_HEIGHT / 2));
     end
@@ -166,7 +166,7 @@ function InventoryEquipmentBar_OnUpdate(self, elapsed)
                 if (itemID) then
                     local _, spellID = GetItemSpell(itemID);
                     if (spellID) then
-                        inRange = IsItemInRange(itemID);
+                        inRange = IsItemInRange(itemID, "target");
                         checksRange = inRange ~= nil;
                     end
                 end
@@ -216,7 +216,8 @@ function InventoryEquipmentButton_OnLoad(self)
     local slotID, textureName = GetInventorySlotInfo(self.invSlotName);
     self.invSlot = slotID;
     self.emptyTextureName = textureName;
-    self:SetAttribute("item", slotID);
+    --self:SetAttribute("item", slotID);
+    self:SetAttribute("macrotext1", "/use [@mouseover,exists][]"..slotID);
 
     local fontName, fontHeight, fontFlags = self.Count:GetFont();
     self.Count:SetFont(fontName, fontHeight - 3, fontFlags);
